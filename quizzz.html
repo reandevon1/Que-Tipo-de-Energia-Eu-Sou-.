@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz: Que Tipo de Energia Eu Sou?</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-image: url('design.jpg.jpg');
+            background-size: cover;
+            color: #ffffff;
+            text-align: center;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .quiz-container {
+            background-color: rgba(114, 98, 98, 0.7);
+            border-radius: 10px;
+            padding: 20px;
+            max-width: 600px;
+            margin: auto;
+        }
+
+        .question-container {
+            display: none;
+        }
+
+        .active {
+            display: block;
+        }
+
+        img {
+            max-width: 100%;
+            height: auto;
+            margin-top: 10px;
+            border-radius: 10px;
+        }
+
+        button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 20px;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        #logo {
+            max-width: 150px;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="quiz-container">
+        <img id="logo" src="c:\Users\renat\Downloads\QUE TIPO DE ENERGIA EU SOU.png" alt="Logo">
+        <h1>Quiz: Que Tipo de Energia Eu Sou?</h1>
+        <div id="quiz"></div>
+        <button id="nextButton" onclick="nextQuestion()">Próxima</button>
+        <button id="resultButton" style="display:none;" onclick="showResult()">Ver Resultado</button>
+        <h2 id="result"></h2>
+    </div>
+
+    <script>
+        const questions = [
+            {
+                question: "Qual desses lugares você prefere estar?",
+                options: ['Na praia, sentindo o calor do sol.', 'Em uma montanha, respirando ar fresco.', 'Em uma cidade movimentada, cheia de vida e energia.', 'Perto de um rio ou cachoeira, ouvindo o som da água.', 'Em um campo tranquilo, cercado pela natureza.'],
+                answerKey: ['A', 'B', 'C', 'D', 'E'],
+            },
+            {
+                question: "Como você prefere passar seu tempo livre?",
+                options: ['Praticando esportes ou atividades físicas.', 'Meditando ou fazendo yoga.', 'Explorando a cidade, aproveitando a vida noturna.', 'Cozinhando ou curtindo momentos tranquilos em casa.', 'Fazendo um hobby criativo, como pintar ou escrever.'],
+                answerKey: ['A', 'B', 'C', 'D', 'E'],
+            },
+            {
+                question: "Se você fosse um elemento da natureza, qual você seria?",
+                options: ['Fogo', 'Ar', 'Metal', 'Água', 'Terra'],
+                answerKey: ['A', 'B', 'C', 'D', 'E'],
+            },
+            {
+                question: "Qual dessas características mais combina com você?",
+                options: ['Determinação', 'Adaptabilidade', 'Ambição', 'Serenidade', 'Criatividade'],
+                answerKey: ['A', 'B', 'C', 'D', 'E'],
+            },
+            {
+                question: "O que te motiva?",
+                options: ['Desafios e conquistas.', 'Liberdade e novas experiências.', 'Sucesso e reconhecimento.', 'Harmonia e paz interior.', 'A expressão de ideias e emoções.'],
+                answerKey: ['A', 'B', 'C', 'D', 'E'],
+            },
+            {
+                question: "Como você reage diante de uma situação difícil?",
+                options: ['Enfrento de cabeça erguida e com coragem.', 'Penso em diferentes possibilidades antes de agir.', 'Uso minha inteligência para superar o obstáculo.', 'Procuro manter a calma e analisar a situação com tranquilidade.', 'Tento encontrar uma solução criativa e inovadora.'],
+                answerKey: ['A', 'B', 'C', 'D', 'E'],
+            },
+            {
+                question: "Qual dessas cores você mais se identifica?",
+                options: ['Vermelho', 'Azul', 'Preto', 'Branco', 'Verde'],
+                answerKey: ['A', 'B', 'C', 'D', 'E'],
+            },
+            {
+                question: "O que você mais valoriza em um amigo?",
+                options: ['Lealdade', 'Flexibilidade', 'Determinação', 'Sensibilidade', 'Inteligência'],
+                answerKey: ['A', 'B', 'C', 'D', 'E'],
+            }
+        ];
+
+        let currentQuestionIndex = 0;
+        const scores = { A: 0, B: 0, C: 0, D: 0, E: 0 };
+
+        function renderQuiz() {
+            const quizDiv = document.getElementById('quiz');
+            questions.forEach((q, index) => {
+                const questionDiv = document.createElement('div');
+                questionDiv.className = 'question-container';
+                if (index === 0) questionDiv.classList.add('active');
+
+                const questionText = document.createElement('p');
+                questionText.textContent = `${index + 1}. ${q.question}`;
+                questionDiv.appendChild(questionText);
+                
+                const img = document.createElement('img');
+                img.src = q.image;
+                questionDiv.appendChild(img);
+                
+                q.options.forEach((option, i) => {
+                    const label = document.createElement('label');
+                    const radio = document.createElement('input');
+                    radio.type = 'radio';
+                    radio.name = `question${index}`;
+                    radio.value = q.answerKey[i];
+                    label.appendChild(radio);
+                    label.appendChild(document.createTextNode(option));
+                    questionDiv.appendChild(label);
+                    questionDiv.appendChild(document.createElement('br'));
+                });
+                
+                quizDiv.appendChild(questionDiv);
+            });
+        }
+
+        function nextQuestion() {
+            const currentQuestionDiv = document.querySelector('.question-container.active');
+            const selectedOption = document.querySelector(`input[name="question${currentQuestionIndex}"]:checked`);
+            
+            if (selectedOption) {
+                scores[selectedOption.value]++;
+                currentQuestionDiv.classList.remove('active');
+                
+                currentQuestionIndex++;
+                if (currentQuestionIndex < questions.length) {
+                    const nextQuestionDiv = document.querySelectorAll('.question-container')[currentQuestionIndex];
+                    nextQuestionDiv.classList.add('active');
+                } else {
+                    document.getElementById('nextButton').style.display = 'none';
+                    document.getElementById('resultButton').style.display = 'block';
+                }
+            } else {
+                alert("Por favor, selecione uma opção antes de continuar.");
+            }
+        }
+
+        function showResult() {
+            const resultText = document.getElementById('result');
+            const maxScore = Math.max(scores.A, scores.B, scores.C, scores.D, scores.E);
+
+            let result = "";
+            if (scores.A === maxScore) result = "Energia Solar! Cheio de vitalidade e paixão, você ilumina os lugares por onde passa e é uma fonte de inspiração para os outros.";
+            if (scores.B === maxScore) result = "Energia Eólica! Adaptável e livre, você gosta de explorar novas ideias e lugares, sempre em busca de inovação.";
+            if (scores.C === maxScore) result = "Energia Fóssil! Forte e determinado, você busca poder e eficiência, valorizando resultados rápidos e concretos.";
+            if (scores.D === maxScore) result = "Energia Hidrelétrica! Tranquilo e sereno, você flui com a vida, buscando equilíbrio e harmonia em todas as situações.";
+            if (scores.E === maxScore) result = "Energia Geotérmica! Criativo e profundo, você tem uma conexão forte com suas raízes e valoriza a introspecção e a criatividade.";
+
+            resultText.textContent = `Você é: ${result}`;
+        }
+
+        renderQuiz();
+    </script>
+</body>
+</html>
+
